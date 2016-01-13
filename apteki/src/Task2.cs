@@ -23,95 +23,79 @@ namespace apteki.src {
 		public class Pharmacy {
 			public String Name; 
 			public String Adress;
-			public Coordinates PharmCoord;
+			public Coordinates Coord;
 			public double Distance;
 			public Pharmacy(String name, String adress, Coordinates coord) {
-				Name = name; Adress = adress; PharmCoord = coord;
+				Name = name; Adress = adress; Coord = coord;
 				Distance = 0.0;
 			}
 		}
 
 		private bool _initialized = false;
-		private bool _initializedInput = false;
+		private StreamReader _streamReader = null;
 
 		private List<Pharmacy> _pharmacyData = new List<Pharmacy>();
 		private InputData _data = new InputData();
 
+		public void closeStreamReader() {
+			if (_streamReader != null) {
+				_streamReader.Close();
+				_streamReader = null;
+			}
+		}
 		public bool SetInputData(String filename) {
-			_initializedInput = false;
-			try {
-				StreamReader sr = new StreamReader(filename);
-				while (!sr.EndOfStream) {
-					var line = sr.ReadLine();
-					var lines = line.Split(new char[] { ' ' });	
+			closeStreamReader();
+			_streamReader = new StreamReader(filename);
+
+			while (!_streamReader.EndOfStream) {
+				var line = _streamReader.ReadLine();
+				var lines = line.Split(new char[] { ' ' });	
 		
-					_data.Filename = Convert.ToString(lines[0]);
-					_data.InputCoord = new Coordinates(Convert.ToDouble(lines[1].Replace('.', ',')), Convert.ToDouble(lines[2].Replace('.', ',')));
-				}
-				sr.Close();
-				_initializedInput = true;
-
-				return true;
+				_data.Filename = Convert.ToString(lines[0]);
+				_data.InputCoord = new Coordinates(Convert.ToDouble(lines[1].Replace('.', ',')), Convert.ToDouble(lines[2].Replace('.', ',')));
 			}
-			catch (Exception) { return false; }
+			closeStreamReader();
+			return SetPharmData();
 		}
-		public bool SetPharmData() {
-			if (_initializedInput) {
-				_initialized = false;
-				_pharmacyData.Clear();
-				try {
-					StreamReader sr = new StreamReader(_data.Filename);
-					int index = 0;
-					while (!sr.EndOfStream) {
-						var line = sr.ReadLine();
-						var lines = line.Split(new char[] { '|' });
+		private bool SetPharmData() {
+			_initialized = false;
+			_pharmacyData.Clear();
 
-						if (index == 0) { index++; continue; }
-						var name = Convert.ToString(lines[0]);
-						var addr = Convert.ToString(lines[1]);
-						var coord = new Coordinates(Convert.ToDouble(lines[2].Replace('.', ',')), Convert.ToDouble(lines[3].Replace('.', ',')));
-						_pharmacyData.Add(new Pharmacy(name, addr, coord));
-						index++;
-					}
-					sr.Close();
-					_initialized = true;
+			_streamReader = new StreamReader(_data.Filename);
 
-					return true;
-				}
-				catch (Exception) { return false; }
+			_streamReader.ReadLine();
+			while (!_streamReader.EndOfStream) {
+				var line = _streamReader.ReadLine();
+				var lines = line.Split(new char[] { '|' });
+
+				var name = Convert.ToString(lines[0]);
+				var addr = Convert.ToString(lines[1]);
+				var coord = new Coordinates(Convert.ToDouble(lines[2].Replace('.', ',')), Convert.ToDouble(lines[3].Replace('.', ',')));
+				_pharmacyData.Add(new Pharmacy(name, addr, coord));
 			}
-			else return false;
-		}
+			closeStreamReader();
+			_initialized = true;
 
+			return true;
+		}
 		private double euclideanNorm(Coordinates x, Coordinates y) {
 			var a = Math.Pow((x.Longitude - y.Longitude), 2.0);
 			var b = Math.Pow((x.Latitude - y.Latitude), 2.0);
 			return Math.Sqrt(a + b);
 		}
-		private void calculateDist() {
-			for (int i = 0; i < _pharmacyData.Count; i++) 
-				_pharmacyData[i].Distance = euclideanNorm(_data.InputCoord, _pharmacyData[i].PharmCoord);
-		}
+		public bool ThreeClosePharmsToFile(String filename){
+			if (!_initialized) throw new InvalidProgramException("System is not initialized!");
+			if (_pharmacyData.Count < 3) throw new InvalidProgramException("Count of pharmacy data < 3!");
+			
+			_pharmacyData = _pharmacyData.OrderBy(x => {
+				return euclideanNorm(_data.InputCoord, x.Coord); }).ToList();
 
-		private bool orderPharmsByDist() {
-			if (_initialized) {
-				if (_pharmacyData.Count < 3) return false;
-				calculateDist();
-				_pharmacyData = _pharmacyData.OrderBy(x => x.Distance).ToList();
-				return true;
-			}
-			else return false;
-		}
-
-		public bool GetAndWriteToFileThreeClosePharms(String filename) {
-			if (orderPharmsByDist()) {
 				StreamWriter sw = new StreamWriter(filename);
 				for (int i = 0; i < 3; i++)
 					sw.WriteLine(_pharmacyData[i].Name + "|" + _pharmacyData[i].Adress);
 				sw.Close();
+
 				return true;
-			}
-			else return false;
 		}
 	}
 }

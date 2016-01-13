@@ -4,3 +4,9 @@ c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\bin\Debu
 c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\bin\Debug\apteki.pdb
 c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\obj\Debug\apteki.exe
 c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\obj\Debug\apteki.pdb
+C:\Users\Мария\Documents\proj\Pharmacy\apteki\bin\Debug\apteki.exe.config
+C:\Users\Мария\Documents\proj\Pharmacy\apteki\obj\Debug\apteki.exe
+C:\Users\Мария\Documents\proj\Pharmacy\apteki\obj\Debug\apteki.pdb
+C:\Users\Мария\Documents\proj\Pharmacy\apteki\bin\Debug\apteki.exe
+C:\Users\Мария\Documents\proj\Pharmacy\apteki\bin\Debug\apteki.pdb
+C:\Users\Мария\Documents\proj\Pharmacy\apteki\obj\Debug\apteki.csprojResolveAssemblyReference.cache

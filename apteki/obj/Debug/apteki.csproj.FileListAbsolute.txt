@@ -1,0 +1,6 @@
+c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\bin\Debug\apteki.exe.config
+c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\obj\Debug\apteki.csprojResolveAssemblyReference.cache
+c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\bin\Debug\apteki.exe
+c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\bin\Debug\apteki.pdb
+c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\obj\Debug\apteki.exe
+c:\users\мария\documents\visual studio 2013\Projects\apteki\apteki\obj\Debug\apteki.pdb
